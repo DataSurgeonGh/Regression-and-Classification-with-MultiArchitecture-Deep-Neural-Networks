@@ -1,0 +1,261 @@
+---
+title: "Regression and Classification with MultiArchitecture (Deep) Neural Networks"
+Course: "Algorithms for Data Science (PhD Level) Neural Networks Module"
+Author: "Chanik Kwao-Agboado"
+Intructor: "William O. Agyapong, PhD"
+---
+
+## Quarto
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+## Libraries : Lets import the Keras Library
+
+```{r}
+set.seed(260408)
+#install.packages("janitor")   # run once
+```
+
+```{r}
+reticulate::conda_list()
+```
+
+The Reticulate shows us the conda env available to utilize for the project
+
+```{r}
+library(reticulate)
+use_condaenv("r-tensorflow", required = TRUE)
+```
+
+```{r}
+py_config()
+```
+
+```{r}
+library(keras3)
+library(tensorflow)
+library(janitor)
+```
+
+## Part 0 - Baseline 
+
+Let us import the Jena Climate dataset to see the frequency of the data
+
+```{r}
+library(readr)
+path <- "C:/Users/stvya/Downloads/jena_climate_2009_2016.csv"
+
+df_jena <- read_csv(path)
+```
+
+```{r}
+head(df_jena)
+```
+
+The column names appear to have spaces, which is not a proper convention for column names for dataframes.
+
+We use the janitor library to clean it
+
+```{r}
+# data <- janitor::clean_names(data) use this or call the janitor library and use the clean_names method directly.
+df_jena <- clean_names(df_jena)
+```
+
+```{r}
+tail(df_jena)
+```
+
+```{r}
+str(df_jena)
+```
+
+```{r}
+dim(df_jena)
+```
+
+```{r}
+summary(df_jena)
+```
+
+```{r}
+# make the date column a more datetime 
+df_jena$date_time <- as.POSIXct(df_jena$date_time,
+                              format = "%d.%m.%Y %H:%M:%S")
+```
+
+```{r}
+plot(df_jena$date_time, df_jena$t_deg_c, type = "l")
+```
+
+## Observation:
+
+## From the plot, it is clear there is seasonality and trend in the Jena climate data, plotting the temperature vrs datetime 
+
+```{r}
+#Let us visualise a section of the datetime column to understand the time step in the data
+#head(df_jena$date_time, 10)
+head(df_jena[, c("date_time")])
+```
+
+We can see that the time stamp is every 10 minutes. From 2009-01-01 00:10:00 GMT and the next step is 2009-01-01 00:20:00 GMT and so on and so forth...
+
+```{r}
+#The time space is 10 minutes as can be seen for this 10 rows of data
+head(diff(df_jena$date_time), 10)
+```
+
+```{r}
+#Checking for missing values: As we can see, there are no missing values in the dataset. Which is good. We can proceed to build a base model
+colSums(is.na(df_jena))
+```
+
+## Naive Model (Jena Climate Data):
+
+We begin with a naive model
+
+```{r}
+
+obs_per_day <- 24 * (60 / 10) #hours * minutes / interval = 144
+lookback <- 10 * obs_per_day # days * hours * minutes / interval =1440
+step <- 6             # sample every hour (since evry 10 mins, 1hr = 60/10)
+delay <- 144          # predict 24 hours ahead (24*6)
+batch_size <- 128
+
+```
+
+```{r}
+generator <- function(data, lookback, delay, min_index, max_index,
+                      shuffle = FALSE, batch_size = 128, step = 6) {
+
+  data <- as.matrix(data)
+
+  if (is.null(max_index))
+    max_index <- nrow(data) - delay - 1
+
+  i <- min_index + lookback
+
+  function() {
+
+    if (shuffle) {
+      rows <- sample((min_index + lookback):max_index, size = batch_size)
+    } else {
+      if (i + batch_size >= max_index)
+        i <<- min_index + lookback
+
+      rows <- i:min(i + batch_size - 1, max_index)
+      i <<- i + length(rows)
+    }
+
+    timesteps <- length(seq(1, lookback, by = step))
+
+    samples <- array(0, dim = c(length(rows), timesteps, ncol(data)))
+    targets <- array(0, dim = c(length(rows)))
+
+    for (j in seq_along(rows)) {
+
+      start <- rows[j] - lookback
+      end <- rows[j] - 1
+
+      if (start < 1) next
+
+      indices <- seq(start, end, by = step)
+
+      samples[j,,] <- data[indices, , drop = FALSE]
+      targets[j] <- data[rows[j] + delay, 2]
+    }
+
+    list(samples, targets)
+  }
+}
+```
+
+Testing my generator
+
+```{r} #convert the data into numeric datatyes; remove datatime, then convert all to numeric, then scale the data}
+
+df <- df_jena
+
+# 1. remove datetime
+df$date_time <- NULL   # adjust name
+
+# 2. force numeric
+df[] <- lapply(df, as.numeric)
+
+# 3. scale (recommended)
+df <- scale(df)
+```
+
+```{r} # applying the generator}
+train_gen <- generator(df, lookback, delay,
+                       min_index = 1,
+                       max_index = 200000,
+                       shuffle = FALSE,
+                       batch_size = batch_size,
+                       step = step)
+
+batch <- train_gen()
+str(batch)
+```
+
+```{r} # Some checks: Printing the shape of a sample batch}
+batch <- train_gen()
+
+dim(batch[[1]])
+dim(batch[[2]])
+```
+
+LEts evaluate our baseline Model
+
+```{r}
+evaluate_naive <- function(generator, steps) {
+  batch_maes <- c()
+
+  for (step in 1:steps) {
+    batch <- generator()
+    samples <- batch[[1]]
+    targets <- batch[[2]]
+
+    # last timestep temperature (column 2 assumed temp)
+    preds <- samples[, dim(samples)[2], 2]
+
+    mae <- mean(abs(preds - targets))
+    batch_maes <- c(batch_maes, mae)
+  }
+
+  mean(batch_maes)
+}
+
+baseline_mae <- evaluate_naive(train_gen, steps = 100)
+baseline_mae
+```
+
+From the result, our naive model mean absolute error is 0.2979 \~ 0.30
+
+## Naive Model (MNIST Data):
+
+```{r}
+library(keras3)
+
+mnist <- dataset_mnist()
+train_images <- mnist$train$x
+train_labels <- mnist$train$y
+test_images <- mnist$test$x
+test_labels <- mnist$test$y
+```
+
+```{r}
+#Let us flatten it 
+train_labels <- as.integer(train_labels)
+test_labels <- as.integer(test_labels)
+```
+
+```{r}
+set.seed(260408)
+
+random_preds <- sample(0:9, length(test_labels), replace = TRUE)
+```
+
+```{r}
+accuracy <- mean(random_preds == test_labels)
+round(accuracy * 100,0)
+```

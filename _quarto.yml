@@ -1,0 +1,11 @@
+project:
+  title: "Regression and Classification with MultiArchitecture (Deep) Neural Networks"
+  format: 
+  pdf:
+    toc: true
+    number-sections: true
+execute:
+  echo: false      # hide code
+  warning: false
+  message: false
+editor: visual
