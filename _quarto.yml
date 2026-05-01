@@ -1,11 +1,32 @@
 project:
-  title: "Regression and Classification with MultiArchitecture (Deep) Neural Networks"
-  format: 
+  title: "DNN_project1"
+  #Author: "Chanik Kwao-Agboado"
+  #Intructor: "William O. Agyapong, PhD"
+  output-dir: outputs
+
+format:
   pdf:
+    documentclass: article
+    fontsize: 12pt
+    margin-left: 1in
+    margin-right: 1in
+    margin-top: 1in
+    margin-bottom: 1in
     toc: true
+    toc-depth: 3
     number-sections: true
+    colorlinks: true
+    keep-tex: false
+    fig-pos: "H"
+    fig-width: 7
+    fig-height: 4.5
+
 execute:
-  echo: false      # hide code
+  echo: false
   warning: false
   message: false
+  eval: true
+  include: true
+
 editor: visual
+
