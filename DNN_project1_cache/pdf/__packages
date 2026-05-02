@@ -1,0 +1,15 @@
+keras3
+tensorflow
+ggplot2
+reshape2
+gridExtra
+dplyr
+lubridate
+forecast
+knitr
+kableExtra
+janitor
+reticulate
+readr
+corrplot
+tidyr

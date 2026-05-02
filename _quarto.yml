@@ -4,7 +4,7 @@ project:
   #Intructor: "William O. Agyapong, PhD"
   output-dir: outputs
 
-format:
+fformat:
   pdf:
     documentclass: article
     fontsize: 12pt
@@ -27,6 +27,7 @@ execute:
   message: false
   eval: true
   include: true
+  cache: true
+  freeze: auto
 
 editor: visual
-
