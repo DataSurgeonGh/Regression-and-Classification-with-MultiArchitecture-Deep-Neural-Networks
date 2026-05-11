@@ -8,8 +8,8 @@
 
 This project applies and compares multiple deep neural network (DNN) architectures to two well-known benchmark problems:
 
-- **Regression** — forecasting hourly air temperature 24 hours ahead using the [Jena Climate dataset](https://www.kaggle.com/datasets/mnassrib/jena-climate) (2009–2016)
-- **Classification** — multi-class digit recognition using the [MNIST dataset](http://yann.lecun.com/exdb/mnist/)
+- **Regression** — forecasting hourly air temperature 24 hours ahead using the [Jena Climate dataset]Can be found at this url: (https://www.kaggle.com/datasets/mnassrib/jena-climate) (2009–2016)
+- **Classification** — multi-class digit recognition using the [MNIST dataset] MNIST R dataset
 
 All models are implemented in **R** using `keras3` and `tensorflow`, and the analysis is written in **Quarto** (`.qmd`), rendered to PDF.
 
@@ -180,7 +180,11 @@ quarto render DNN_project1.qmd
 - **Instructor:** William O. Agyapong, PhD
 
 ---
+## References
+> James, G., Witten, D., Hastie, T., & Tibshirani, R. (2021). 
+> *An introduction to statistical learning: With applications in R* (2nd ed.).
 
+---
 ## License
 
 This project is for academic and educational purposes.
