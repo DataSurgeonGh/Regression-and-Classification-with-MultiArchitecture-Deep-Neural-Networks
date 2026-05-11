@@ -184,7 +184,8 @@ quarto render DNN_project1.qmd
 > James, G., Witten, D., Hastie, T., & Tibshirani, R. (2021). 
 > *An introduction to statistical learning: With applications in R* (2nd ed.).
 
-Willian Agyapong,(2026, April). Neural Networks and Deep Neural Nets [Lecture notes]. Department of Mathematical Statistics, Kwame Nkrumah University of Science and Technology
+> Willian Agyapong,(2026, April). Neural Networks and Deep Neural Nets [Lecture notes].
+> Department of Mathematical Statistics, Kwame Nkrumah University of Science and Technology
 
 > Chatfield, C. (2000). Time-Series Forecasting. Boca Raton: Chapman & Hall/CRC.
 
