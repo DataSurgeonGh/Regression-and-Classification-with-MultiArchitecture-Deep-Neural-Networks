@@ -189,6 +189,20 @@ quarto render DNN_project1.qmd
 
 > Chatfield, C. (2000). Time-Series Forecasting. Boca Raton: Chapman & Hall/CRC.
 
+> Chollet, F. & Allaire, J.J. (2022). Deep Learning with R, 3rd ed. Manning.
+https://www.manning.com/books/deep-learning-with-r-third-edition. Chapters 7–11, 13 cover
+CNNs, RNNs, and the Jena dataset.
+
+> Goodfellow, I., Bengio, Y. & Courville, A. (2016). Deep Learning. MIT Press. Chapters 9 (CNN),
+10 (RNN/LSTM). https://www.deeplearningbook.org/
+
+>Diebold, F.X. & Mariano, R.S. (1995). Comparing predictive accuracy. Journal of Business and
+Economic Statistics, 13(3), 253–263
+
+>LeCun, Y. et al. (1998). Gradient-based learning applied to document recognition. Proc. IEEE,
+86(11), 2278–2324. http://vision.stanford.edu/cs598_spring07/papers/Lecun98.pdf. [Original
+MNIST paper] 
+
 ---
 ## License
 
