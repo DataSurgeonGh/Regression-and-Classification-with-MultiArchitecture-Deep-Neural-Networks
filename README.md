@@ -186,6 +186,8 @@ quarto render DNN_project1.qmd
 
 Willian Agyapong,(2026, April). Neural Networks and Deep Neural Nets [Lecture notes]. Department of Mathematical Statistics, Kwame Nkrumah University of Science and Technology
 
+> Chatfield, C. (2000). Time-Series Forecasting. Boca Raton: Chapman & Hall/CRC.
+
 ---
 ## License
 
